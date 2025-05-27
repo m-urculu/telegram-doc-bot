@@ -1,6 +1,16 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase'; // Assume this is correctly configured
+import { createClient } from '@supabase/supabase-js';
 import { callGemini } from '@/lib/gemini'; // Assume this is correctly configured
+
+// --- Supabase Client Initialization ---
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+    throw new Error('supabaseUrl and supabaseKey are required.');
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // --- 0. Interfaces & Types ---
 // Only interfaces directly relevant to receiving message, context, and bot profile.
