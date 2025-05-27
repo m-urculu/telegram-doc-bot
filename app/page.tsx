@@ -1,103 +1,380 @@
-import Image from "next/image";
+"use client"
+import { useEffect } from "react"
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Bot, Sparkles, Zap, Shield, Globe, Code, MessageSquare, FileText, ArrowRight, Check, User as UserIcon } from "lucide-react"
+import Link from "next/link"
 
-export default function Home() {
+export default function HomePage() {
+  return <HomePageContent />
+}
+
+function HomePageContent() {
+  const supabase = useSupabaseClient()
+  const user = useUser()
+
+  useEffect(() => {
+    // Debug: check if the Supabase client is initialized and user is present
+    console.log("Supabase client:", supabase)
+    console.log("Supabase user:", user)
+    supabase?.auth.getSession().then((session) => {
+      console.log("Supabase session:", session)
+    })
+  }, [supabase, user])
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Background Gradient */}
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-purple-600/10 via-transparent to-transparent" />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Header */}
+      <header className="relative z-50 border-b border-white/10 backdrop-blur-xl bg-black/50">
+        <div className="container mx-auto px-4 py-4">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                <Bot className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl font-bold">DocBot AI</span>
+            </div>
+
+            {/* Navigation replaced with project pages */}
+            <div className="hidden md:flex items-center gap-8">
+              <Link href="/tutorial" className="text-gray-300 hover:text-white transition-colors">
+                Tutorial
+              </Link>
+              <Link href="/dashboard" className="text-gray-300 hover:text-white transition-colors">
+                Dashboard
+              </Link>
+            </div>
+            <div className="flex items-center gap-4">
+              {user ? (
+                <div className="flex items-center gap-3">
+                  {user.user_metadata?.avatar_url ? (
+                    <img
+                      src={user.user_metadata.avatar_url}
+                      alt={user.user_metadata.full_name || user.email || "User"}
+                      className="w-8 h-8 rounded-full"
+                    />
+                  ) : (
+                    <UserIcon className="w-8 h-8" />
+                  )}
+                  <div className="text-right">
+                    <div className="text-sm font-medium">{user.user_metadata?.full_name || user.email}</div>
+                    <div className="text-xs text-gray-400">{user.email}</div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    className="text-white"
+                    title="Sign out"
+                    onClick={async () => {
+                      await supabase.auth.signOut()
+                    }}
+                  >
+                    Sign out
+                  </Button>
+                </div>
+              ) : (
+                <Link href="/login">
+                  <Button
+                    variant={undefined}
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </nav>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative z-10 container mx-auto px-4 py-20 lg:py-32">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2">
+              <Sparkles className="h-4 w-4 text-purple-400" />
+              <span className="text-sm text-purple-300">AI-Powered Document Bots</span>
+            </div>
+
+            <h1 className="text-5xl lg:text-7xl font-bold">
+              <span className="gradient-white">Create Your</span>
+              <br />
+              <span className="gradient-purple">Business AI Bot</span>
+              <br />
+              <span className="gradient-white">Effortlessly</span>
+            </h1>
+
+            <p className="text-xl text-secondary-light max-w-lg">
+              Transform your documents into intelligent Telegram bots. Upload, configure, and deploy in minutes with our
+              powerful AI platform.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/register">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8"
+                >
+                  Start Building <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/demo">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-gray-700 text-gray-300 hover:bg-gray-900 text-lg px-8"
+                >
+                  Watch Demo
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Chat Preview */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-blue-600/20 blur-3xl" />
+            <Card className="relative bg-gray-900/80 backdrop-blur-xl border-gray-800 p-6 rounded-2xl">
+              <div className="flex items-center gap-3 mb-6 select-text">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                  <Bot className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Support Bot</h3>
+                  <p className="text-sm text-gray-400">Online</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 select-text">
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 bg-gray-700 rounded-full flex-shrink-0" />
+                  <div className="bg-gray-800 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
+                    <p className="text-sm text-white">How can I integrate the API?</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 justify-end">
+                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl rounded-tr-none p-4 max-w-[80%]">
+                    <p className="text-sm text-white">
+                      Based on our documentation, you can integrate our API by following these steps...
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex-shrink-0" />
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center gap-2 p-3 bg-gray-800 rounded-xl select-text">
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  className="flex-1 bg-transparent outline-none text-sm placeholder-gray-400 !cursor-default"
+                  style={{ cursor: "default" }}
+                  readOnly
+                  tabIndex={-1}
+                />
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 !cursor-default"
+                  tabIndex={-1}
+                  style={{ cursor: "default" }}
+                  disabled
+                >
+                  Send
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="relative z-10 container mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4 text-white">
+            <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              Key Features
+            </span>{" "}
+            in a Glance
+          </h2>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Everything you need to build, deploy, and manage intelligent document-based bots
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              icon: <MessageSquare className="h-6 w-6" />,
+              title: "Smart Conversations",
+              description: "AI-powered responses based on your document content",
+            },
+            {
+              icon: <FileText className="h-6 w-6" />,
+              title: "Document Integration",
+              description: "Seamlessly connect Google Docs and other sources",
+            },
+            {
+              icon: <Zap className="h-6 w-6" />,
+              title: "Instant Deployment",
+              description: "Deploy to Telegram in seconds with one click",
+            },
+            {
+              icon: <Shield className="h-6 w-6" />,
+              title: "Enterprise Security",
+              description: "Bank-level encryption and data protection",
+            },
+            {
+              icon: <Globe className="h-6 w-6" />,
+              title: "Multi-Language",
+              description: "Support for 50+ languages out of the box",
+            },
+            {
+              icon: <Code className="h-6 w-6" />,
+              title: "Developer API",
+              description: "Powerful APIs for custom integrations",
+            },
+            {
+              icon: <Bot className="h-6 w-6" />,
+              title: "Bot Analytics",
+              description: "Track performance and user interactions",
+            },
+            {
+              icon: <Sparkles className="h-6 w-6" />,
+              title: "AI Training",
+              description: "Continuously improve bot responses",
+            },
+          ].map((feature, index) => (
+            <Card
+              key={index}
+              className="bg-gray-900/50 backdrop-blur-xl border-gray-800 p-6 hover:bg-gray-900/70 transition-all hover:scale-105 hover:border-purple-500/50"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+                <div className="text-purple-400">{feature.icon}</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-white">{feature.title}</h3>
+              <p className="text-sm text-gray-300">{feature.description}</p>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative z-10 container mx-auto px-4 py-20">
+        <Card className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 backdrop-blur-xl border-purple-500/20 p-12 text-center">
+          <h2 className="text-4xl font-bold mb-4 text-white">Start Building Your AI Bot Today</h2>
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Join thousands of businesses automating their customer support with intelligent document bots
+          </p>
+          <Link href="/register">
+            <Button size="lg" className="bg-white text-black hover:bg-gray-100 text-lg px-8">
+              Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+        </Card>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-gray-800 bg-black/50 backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                  <Bot className="h-6 w-6 text-white" />
+                </div>
+                <span className="text-xl font-bold">DocBot AI</span>
+              </div>
+              <p className="text-gray-400">Transform your documents into intelligent bots.</p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Product</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li>
+                  <Link href="/features" className="hover:text-white transition-colors">
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/pricing" className="hover:text-white transition-colors">
+                    Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/integrations" className="hover:text-white transition-colors">
+                    Integrations
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/changelog" className="hover:text-white transition-colors">
+                    Changelog
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Resources</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li>
+                  <Link href="/docs" className="hover:text-white transition-colors">
+                    Documentation
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/api" className="hover:text-white transition-colors">
+                    API Reference
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="hover:text-white transition-colors">
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/support" className="hover:text-white transition-colors">
+                    Support
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Company</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li>
+                  <Link href="/about" className="hover:text-white transition-colors">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/careers" className="hover:text-white transition-colors">
+                    Careers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="hover:text-white transition-colors">
+                    Privacy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-white transition-colors">
+                    Terms
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 DocBot AI. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
     </div>
-  );
+  )
 }
