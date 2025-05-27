@@ -166,65 +166,58 @@ export default function DashboardPage() {
 
       // Fetch bots from API route
       const fetchBots = async () => {
-        if (!fetchedUser) return // Exit if no user session
-
         try {
-          const res = await fetch("/api/bot/all")
+          const res = await fetch("/api/bot");
           if (!res.ok) {
-            throw new Error("Failed to fetch bots")
+            throw new Error("Failed to fetch bots");
           }
-          const { data } = await res.json()
-          // Map API data to local TelegramBot type if needed
+          const { data } = await res.json();
           setBots(
             (data || []).map((bot: TelegramBot) => ({
               id: bot.id,
               name: bot.name,
-              apiKey: bot.apiKey || "", // or whatever field maps to username
+              apiKey: bot.api_key || "", // Ensure correct field mapping
               status: "active", // You may want to map this from your data
               documentsCount: 0, // You may want to fetch this separately
               messagesCount: 0, // You may want to fetch this separately
-              createdAt: bot.createdAt,
+              createdAt: bot.created_at,
               personality_prompt: bot.personality_prompt,
               ai_persona: bot.ai_persona,
               greeting_message: bot.greeting_message,
               fallback_response: bot.fallback_response,
             }))
-          )
-        } catch { // Error variable not needed as the console.error was commented out
-          // console.error("Error fetching bots:", _err); // Optionally log the error
-          // Optionally handle error
-          setBots([])
+          );
+        } catch (error) {
+          console.error("Error fetching bots:", error);
+          setBots([]);
         }
-      }
-      fetchBots()
+      };
+      fetchBots();
 
       // Fetch documents from API route
       const fetchDocuments = async () => {
-        if (!fetchedUser) return // Exit if no user session
-
         try {
-          const res = await fetch("/api/document")
+          const res = await fetch("/api/document");
           if (!res.ok) {
-            throw new Error("Failed to fetch documents")
+            throw new Error("Failed to fetch documents");
           }
-          const { data } = await res.json()
-          // Map API data to local Document type
+          const { data } = await res.json();
           setDocuments(
             (data || []).map((doc: Document) => ({
               id: doc.id,
               file_name: doc.file_name,
               file_url: doc.file_url,
-              bot_id: doc.bot_id, // This is a single bot ID or null
-              uploadedAt: doc.uploadedAt, // Assuming API returns uploaded_at
-              lastModified: doc.uploadedAt, // Using uploaded_at for simplicity, update if you track last modified
+              bot_id: doc.bot_id,
+              uploadedAt: doc.uploaded_at,
+              lastModified: doc.uploaded_at,
             }))
-          )
-        } catch (err) {
-          console.error("Error fetching documents:", err)
-          setDocuments([]) // Set to empty array on error
+          );
+        } catch (error) {
+          console.error("Error fetching documents:", error);
+          setDocuments([]);
         }
-      }
-      fetchDocuments()
+      };
+      fetchDocuments();
     };
 
     checkUser();

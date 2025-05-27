@@ -180,11 +180,16 @@ export async function GET() {
     const { data, error } = await supabase
       .from('bots')
       .select('*') // Ensure 'api_key' is included in the selection
-      .eq('user_id', user.id);
+      .eq('user_id', user.id); // Filter by the authenticated user's ID
 
     if (error) {
       console.error('Error fetching bots:', error);
       return NextResponse.json({ error: `Failed to fetch bots: ${error.message}` }, { status: 500 });
+    }
+
+    if (!data || data.length === 0) {
+      console.warn('No bots found for the user.');
+      return NextResponse.json({ data: [] }, { status: 200 }); // Return an empty array if no bots are found
     }
 
     return NextResponse.json({ data }, { status: 200 });
