@@ -34,6 +34,13 @@ interface ContextMessage {
     is_bot_response: boolean; // To distinguish user messages from bot replies in context
 }
 
+// Interface for messages fetched from the database for context
+interface MessageFromDB {
+    text: string | null;
+    user_id: number;
+    raw: Record<string, unknown> | null; // Assuming 'raw' is a JSON object or null from Telegram
+}
+
 // Simplified LLMDecision as it will only output a direct response.
 // interface LLMDecision {
 //     response_text: string; // The LLM will directly generate the response text
@@ -132,8 +139,8 @@ export async function POST(request: Request) {
             if (messagesData) {
                 // Filter out the current incoming message if it's already in the context
                 contextMessages = messagesData
-                    .filter(m => m.text !== text || m.user_id !== userTelegramId)
-                    .map(m => ({
+                    .filter((m: MessageFromDB) => m.text !== text || m.user_id !== userTelegramId)
+                    .map((m: MessageFromDB) => ({
                         text: m.text || '',
                         user_id: m.user_id,
                         is_bot_response: m.raw === null, // Infer if it's a bot response
