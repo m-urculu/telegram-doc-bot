@@ -579,6 +579,9 @@ export default function DashboardPage() {
                     width={40} // Provide width
                     height={40} // Provide height
                     className="w-10 h-10 rounded-full"
+                    onError={(e) => {
+                      e.currentTarget.src = "/fallback-avatar.png"; // Fallback image
+                    }}
                   />
                 ) : (
                   <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white">
