@@ -11,7 +11,7 @@ export default function HomePage() {
   return <HomePageContent />
 }
 
-function HomePageContent(): JSX.Element {
+function HomePageContent() {
   const supabase = useSupabaseClient()
   const user = useUser()
 
@@ -53,7 +53,7 @@ function HomePageContent(): JSX.Element {
             <div className="flex items-center gap-4">
               {user ? (
                 <div className="flex items-center gap-3">
-                  {user.user_metadata?.avatar_url && (
+                  {user.user_metadata?.avatar_url ? (
                     <Image
                       src={user.user_metadata.avatar_url}
                       alt={user.user_metadata.full_name || user.email || "User"}

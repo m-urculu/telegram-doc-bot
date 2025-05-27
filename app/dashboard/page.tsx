@@ -94,7 +94,7 @@ function formatSimpleDate(dateString: string | undefined): string {
   }
 }
 
-export default function DashboardPage(): JSX.Element {
+export default function DashboardPage() {
   const user = useUser()
   const supabaseClient = useSupabaseClient()
   const router = useRouter(); // Initialize useRouter
@@ -572,7 +572,7 @@ export default function DashboardPage(): JSX.Element {
                     {user?.email || ""}
                   </p>
                 </div>
-                {user?.user_metadata?.avatar_url && (
+                {user?.user_metadata?.avatar_url ? (
                   <Image
                     src={user.user_metadata.avatar_url}
                     alt={user.user_metadata.full_name || "User"}
