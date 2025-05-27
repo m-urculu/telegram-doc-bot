@@ -581,6 +581,7 @@ export default function DashboardPage() {
                     className="w-10 h-10 rounded-full"
                     onError={(e) => {
                       e.currentTarget.src = "/fallback-avatar.png"; // Fallback image
+                      e.currentTarget.alt = "Fallback User"; // Update alt text
                     }}
                   />
                 ) : (
@@ -1044,7 +1045,7 @@ export default function DashboardPage() {
                               <DropdownMenuContent align="start" className="bg-gray-900 border-gray-800 w-56">
                                 <DropdownMenuItem
                                   onSelect={() => handleAssignBotToDocument(doc.id, null)}
-                                  className="text-gray-400 hover:bg-gray-800 cursor-pointer"
+                                  className="cursor-pointer text-gray-400 hover:bg-gray-800"
                                 >
                                   Unassign
                                 </DropdownMenuItem>
@@ -1052,7 +1053,7 @@ export default function DashboardPage() {
                                   <DropdownMenuItem
                                     key={bot.id}
                                     onSelect={() => handleAssignBotToDocument(doc.id, bot.id)}
-                                    className="text-gray-300 hover:bg-gray-800 cursor-pointer"
+                                    className="cursor-pointer text-gray-300 hover:bg-gray-800"
                                   >
                                     {bot.name}
                                   </DropdownMenuItem>
