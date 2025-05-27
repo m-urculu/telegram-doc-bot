@@ -88,7 +88,7 @@ function formatSimpleDate(dateString: string | undefined): string {
   if (!dateString) return "N/A";
   try {
     return new Date(dateString).toISOString().split('T')[0];
-  } catch (_e) { // Indicate unused variable
+  } catch { // Error variable not needed
     return "Invalid Date";
   }
 }
@@ -189,7 +189,7 @@ export default function DashboardPage() {
               fallback_response: bot.fallback_response,
             }))
           )
-        } catch (_err) { // Indicate unused variable
+        } catch { // Error variable not needed as the console.error was commented out
           // console.error("Error fetching bots:", _err); // Optionally log the error
           // Optionally handle error
           setBots([])
@@ -385,7 +385,7 @@ export default function DashboardPage() {
       if (editingBotData.ai_persona_string.trim() !== "") {
         try {
           aiPersona = JSON.parse(editingBotData.ai_persona_string)
-        } catch (_e) { // Indicate unused variable
+        } catch { // Error variable not needed for this specific re-throw
           throw new SyntaxError("Invalid JSON format for AI Persona.")
         }
       }
