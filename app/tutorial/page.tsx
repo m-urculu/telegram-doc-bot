@@ -143,11 +143,6 @@ export default function TutorialPage() {
                     Create Account
                   </Button>
                 </Link>
-                <Link href="/login">
-                  <Button size="lg" variant="outline" className="text-blue-600 border-white hover:bg-white">
-                    Sign In
-                  </Button>
-                </Link>
               </div>
             </CardContent>
           </Card>

@@ -115,21 +115,12 @@ function HomePageContent() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/register">
+              <Link href="/tutorial">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8"
                 >
                   Start Building <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/demo">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-gray-700 text-gray-300 hover:bg-gray-900 text-lg px-8"
-                >
-                  Watch Demo
                 </Button>
               </Link>
             </div>
