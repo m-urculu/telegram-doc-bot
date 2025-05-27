@@ -38,7 +38,7 @@ interface TelegramBot {
   messagesCount: number
   createdAt: string
   personality_prompt?: string
-  ai_persona?: any
+  ai_persona?: Record<string, unknown> // More specific than any
   greeting_message?: string
   fallback_response?: string
 }
@@ -88,7 +88,7 @@ function formatSimpleDate(dateString: string | undefined): string {
   if (!dateString) return "N/A";
   try {
     return new Date(dateString).toISOString().split('T')[0];
-  } catch (e) {
+  } catch (_e) { // Indicate unused variable
     return "Invalid Date";
   }
 }
@@ -189,7 +189,8 @@ export default function DashboardPage() {
               fallback_response: bot.fallback_response,
             }))
           )
-        } catch (err) {
+        } catch (_err) { // Indicate unused variable
+          // console.error("Error fetching bots:", _err); // Optionally log the error
           // Optionally handle error
           setBots([])
         }
@@ -384,7 +385,7 @@ export default function DashboardPage() {
       if (editingBotData.ai_persona_string.trim() !== "") {
         try {
           aiPersona = JSON.parse(editingBotData.ai_persona_string)
-        } catch (e) {
+        } catch (_e) { // Indicate unused variable
           throw new SyntaxError("Invalid JSON format for AI Persona.")
         }
       }

@@ -99,7 +99,7 @@ export default function TutorialPage() {
 
         {/* Tutorial Steps */}
         <div className="max-w-4xl mx-auto space-y-8">
-          {steps.map((step, index) => (
+          {steps.map((step) => (
             <Card key={step.id} className="border-0 shadow-lg">
               <CardHeader>
                 <div className="flex items-start gap-4">

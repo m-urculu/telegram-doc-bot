@@ -295,7 +295,7 @@ export async function PATCH(request: Request) {
       }
     }
 
-    const updatedFields: Record<string, any> = {};
+    const updatedFields: Record<string, string | object | null> = {};
 
     // Map provided fields from the request body to database column names
     // Only add fields to `updatedFields` if they were actually included in the request

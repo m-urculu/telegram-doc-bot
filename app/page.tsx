@@ -2,9 +2,8 @@
 import { useEffect } from "react"
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Bot, Sparkles, Zap, Shield, Globe, Code, MessageSquare, FileText, ArrowRight, Check, User as UserIcon } from "lucide-react"
+import { Card } from "@/components/ui/card" 
+import { Bot, Sparkles, Zap, Shield, Globe, Code, MessageSquare, FileText, ArrowRight, User as UserIcon } from "lucide-react"
 import Link from "next/link"
 
 export default function HomePage() {

@@ -6,10 +6,11 @@ import { Bot, Chrome, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { type SupabaseClient } from "@supabase/supabase-js" // Import SupabaseClient type
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const [supabase, setSupabase] = useState<any>(null)
+  const [supabase, setSupabase] = useState<SupabaseClient | null>(null) // Specify SupabaseClient type
 
   useEffect(() => {
     setSupabase(createClientComponentClient())
@@ -45,11 +46,21 @@ export default function LoginPage() {
               <Button
                 onClick={async () => {
                   if (!supabase) return
-                  const { error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: { redirectTo: typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined }
-                  })
-                  if (error) console.error('Google sign-in error:', error.message)
+                  setIsLoading(true) // Set loading to true
+                  try {
+                    const { error } = await supabase.auth.signInWithOAuth({
+                      provider: 'google',
+                      options: { redirectTo: typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined }
+                    })
+                    if (error) {
+                      console.error('Google sign-in error:', error.message)
+                      setIsLoading(false) // Set loading to false on error
+                    }
+                    // On success, redirection will occur.
+                  } catch (e) {
+                    console.error('Unexpected sign-in error:', e)
+                    setIsLoading(false) // Set loading to false on unexpected error
+                  }
                 }}
                 disabled={isLoading}
                 className="w-full bg-white text-black hover:bg-gray-100 h-12"
