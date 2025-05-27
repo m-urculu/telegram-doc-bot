@@ -19,6 +19,7 @@ import {
   MessageSquare,
   Search,
   Filter,
+  MoreVertical
 } from "lucide-react"
 import { ChevronDown } from "lucide-react" // Import ChevronDown
 import { useState, useEffect } from "react"
@@ -31,7 +32,7 @@ import { Check } from "lucide-react"
 interface TelegramBot {
   id: string
   name: string
-  username: string
+  apiKey: string
   status: "active" | "inactive"
   documentsCount: number
   messagesCount: number
@@ -177,11 +178,11 @@ export default function DashboardPage() {
             (data || []).map((bot: TelegramBot) => ({
               id: bot.id,
               name: bot.name,
-              username: bot.api_key || "", // or whatever field maps to username
+              apiKey: bot.apiKey || "", // or whatever field maps to username
               status: "active", // You may want to map this from your data
               documentsCount: 0, // You may want to fetch this separately
               messagesCount: 0, // You may want to fetch this separately
-              createdAt: bot.created_at,
+              createdAt: bot.createdAt,
               personality_prompt: bot.personality_prompt,
               ai_persona: bot.ai_persona,
               greeting_message: bot.greeting_message,
@@ -212,8 +213,8 @@ export default function DashboardPage() {
               file_name: doc.file_name,
               file_url: doc.file_url,
               bot_id: doc.bot_id, // This is a single bot ID or null
-              uploadedAt: doc.uploaded_at, // Assuming API returns uploaded_at
-              lastModified: doc.uploaded_at, // Using uploaded_at for simplicity, update if you track last modified
+              uploadedAt: doc.uploadedAt, // Assuming API returns uploaded_at
+              lastModified: doc.uploadedAt, // Using uploaded_at for simplicity, update if you track last modified
             }))
           )
         } catch (err) {
@@ -309,7 +310,7 @@ export default function DashboardPage() {
         {
           id: createdBot.id,
           name: createdBot.name,
-          username: createdBot.api_key || "",
+          apiKey: createdBot.apiKey || "",
           status: "active", // Assuming new bots are active
           documentsCount: 0, // Initialize counts
           messagesCount: 0,
@@ -738,10 +739,10 @@ export default function DashboardPage() {
                             <div>
                               <h3 className="font-semibold text-lg text-white mt-2">{bot.name}</h3>
                               {/* Only show the partially hidden API key and copy button below */}
-                              {bot.username && (
+                              {bot.apiKey && (
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs text-gray-400 font-mono">
-                                    {maskApiKey(bot.username)}
+                                    {maskApiKey(bot.apiKey)}
                                   </span>
                                   <Button
                                     type="button"
@@ -750,7 +751,7 @@ export default function DashboardPage() {
                                     className="text-gray-400 hover:text-purple-400 p-1"
                                     title="Copy API Key"
                                     onClick={async () => {
-                                      await navigator.clipboard.writeText(bot.username)
+                                      await navigator.clipboard.writeText(bot.apiKey)
                                       setCopiedBotId(bot.id)
                                       setTimeout(() => setCopiedBotId(null), 1200)
                                     }}
@@ -941,7 +942,7 @@ export default function DashboardPage() {
                               <SelectItem value="none" className="text-gray-400 hover:bg-gray-800">Do not assign</SelectItem>
                               {bots.map((bot) => (
                                 <SelectItem key={bot.id} value={bot.id} className="text-gray-300 hover:bg-gray-800">
-                                  {bot.name} ({maskApiKey(bot.username)})
+                                  {bot.name} ({maskApiKey(bot.apiKey)})
                                 </SelectItem>
                               ))}
                             </SelectContent>
