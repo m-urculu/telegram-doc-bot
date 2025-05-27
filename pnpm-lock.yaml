@@ -29,6 +29,9 @@ dependencies:
   '@supabase/auth-helpers-react':
     specifier: ^0.5.0
     version: 0.5.0(@supabase/supabase-js@2.49.8)
+  '@supabase/supabase-js':
+    specifier: ^2.49.8
+    version: 2.49.8
   axios:
     specifier: ^1.6.8
     version: 1.9.0

@@ -24,6 +24,7 @@ import {
 import { ChevronDown } from "lucide-react" // Import ChevronDown
 import { useState, useEffect } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import Image from "next/image" // Import next/image
 import Link from "next/link" // Import Link for navigation
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
@@ -571,10 +572,12 @@ export default function DashboardPage() {
                     {user?.email || ""}
                   </p>
                 </div>
-                {user?.user_metadata?.avatar_url ? (
-                  <img
+                {user?.user_metadata?.avatar_url && (
+                  <Image
                     src={user.user_metadata.avatar_url}
                     alt={user.user_metadata.full_name || "User"}
+                    width={40} // Provide width
+                    height={40} // Provide height
                     className="w-10 h-10 rounded-full"
                   />
                 ) : (

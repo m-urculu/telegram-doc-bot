@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card" 
 import { Bot, Sparkles, Zap, Shield, Globe, Code, MessageSquare, FileText, ArrowRight, User as UserIcon } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image" // Import next/image
 
 export default function HomePage() {
   return <HomePageContent />
@@ -52,10 +53,12 @@ function HomePageContent() {
             <div className="flex items-center gap-4">
               {user ? (
                 <div className="flex items-center gap-3">
-                  {user.user_metadata?.avatar_url ? (
-                    <img
+                  {user.user_metadata?.avatar_url && (
+                    <Image
                       src={user.user_metadata.avatar_url}
                       alt={user.user_metadata.full_name || user.email || "User"}
+                      width={32} // Provide width
+                      height={32} // Provide height
                       className="w-8 h-8 rounded-full"
                     />
                   ) : (
