@@ -747,7 +747,7 @@ export default function DashboardPage() {
                             <div>
                               <h3 className="font-semibold text-lg text-white mt-2">{bot.name}</h3>
                               {/* Only show the partially hidden API key and copy button below */}
-                              {bot.apiKey && (
+                              {bot.apiKey ? (
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs text-gray-400 font-mono">
                                     {maskApiKey(bot.apiKey)}
@@ -774,6 +774,8 @@ export default function DashboardPage() {
                                     <span className="text-xs text-green-400 ml-1">Copied!</span>
                                   )}
                                 </div>
+                              ) : (
+                                <span className="text-xs text-gray-500">API Key not available</span>
                               )}
                             </div>
                           </div>
