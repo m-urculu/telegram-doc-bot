@@ -176,11 +176,11 @@ export default function DashboardPage() {
             (data || []).map((bot: TelegramBot) => ({
               id: bot.id,
               name: bot.name,
-              apiKey: bot.api_key || "", // Ensure correct field mapping
+              apiKey: bot.apiKey || "", // Correctly map the property
               status: "active", // You may want to map this from your data
               documentsCount: 0, // You may want to fetch this separately
               messagesCount: 0, // You may want to fetch this separately
-              createdAt: bot.created_at,
+              createdAt: bot.createdAt,
               personality_prompt: bot.personality_prompt,
               ai_persona: bot.ai_persona,
               greeting_message: bot.greeting_message,
