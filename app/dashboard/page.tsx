@@ -208,8 +208,8 @@ export default function DashboardPage() {
               file_name: doc.file_name,
               file_url: doc.file_url,
               bot_id: doc.bot_id,
-              uploadedAt: doc.uploaded_at,
-              lastModified: doc.uploaded_at,
+              uploadedAt: doc.uploadedAt,
+              lastModified: doc.uploadedAt,
             }))
           );
         } catch (error) {
