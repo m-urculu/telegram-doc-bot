@@ -94,7 +94,7 @@ function formatSimpleDate(dateString: string | undefined): string {
   }
 }
 
-export default function DashboardPage() {
+export default function DashboardPage(): JSX.Element {
   const user = useUser()
   const supabaseClient = useSupabaseClient()
   const router = useRouter(); // Initialize useRouter

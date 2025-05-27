@@ -11,7 +11,7 @@ export default function HomePage() {
   return <HomePageContent />
 }
 
-function HomePageContent() {
+function HomePageContent(): JSX.Element {
   const supabase = useSupabaseClient()
   const user = useUser()
 
