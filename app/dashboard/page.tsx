@@ -12,15 +12,11 @@ import {
   Bot,
   FileText,
   Plus,
-  Settings,
   Trash2,
   Edit,
   ExternalLink,
-  BarChart3,
   Users,
   MessageSquare,
-  TrendingUp,
-  MoreVertical,
   Search,
   Filter,
 } from "lucide-react"
@@ -178,7 +174,7 @@ export default function DashboardPage() {
           const { data } = await res.json()
           // Map API data to local TelegramBot type if needed
           setBots(
-            (data || []).map((bot: any) => ({
+            (data || []).map((bot: TelegramBot) => ({
               id: bot.id,
               name: bot.name,
               username: bot.api_key || "", // or whatever field maps to username
@@ -211,7 +207,7 @@ export default function DashboardPage() {
           const { data } = await res.json()
           // Map API data to local Document type
           setDocuments(
-            (data || []).map((doc: any) => ({
+            (data || []).map((doc: Document) => ({
               id: doc.id,
               file_name: doc.file_name,
               file_url: doc.file_url,
