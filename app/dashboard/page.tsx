@@ -175,7 +175,7 @@ export default function DashboardPage() {
           }
           const { data } = await res.json();
           setBots(
-            (data || []).map((bot: any) => ({
+            (data || []).map((bot: TelegramBot) => ({
               id: bot.id, // Maps the bot's unique ID
               name: bot.name, // Maps the bot's name
               apiKey: bot.apiKey || "", // Correctly maps API key
