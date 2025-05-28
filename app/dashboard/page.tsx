@@ -156,6 +156,7 @@ export default function DashboardPage() {
       }
     })
   }
+  const [isLoadingBots, setIsLoadingBots] = useState(true); // Add loading state for bots
   useEffect(() => {
     const checkUser = async () => {
       const { data: { user: fetchedUser } } = await supabaseClient.auth.getUser();
@@ -166,6 +167,7 @@ export default function DashboardPage() {
 
       // Fetch bots from API route
       const fetchBots = async () => {
+        setIsLoadingBots(true); // Set loading state to true
         try {
           const res = await fetch("/api/bot");
           if (!res.ok) {
@@ -176,11 +178,11 @@ export default function DashboardPage() {
             (data || []).map((bot: TelegramBot) => ({
               id: bot.id,
               name: bot.name,
-              apiKey: bot.apiKey || "", // Correctly map the property
-              status: "active", // You may want to map this from your data
-              documentsCount: 0, // You may want to fetch this separately
-              messagesCount: 0, // You may want to fetch this separately
-              createdAt: bot.createdAt,
+              apiKey: bot.api_key || "", // Ensure apiKey is correctly mapped
+              status: bot.status || "active", // Map status if available
+              documentsCount: bot.documents_count || 0, // Map documents count if available
+              messagesCount: bot.messages_count || 0, // Map messages count if available
+              createdAt: bot.created_at,
               personality_prompt: bot.personality_prompt,
               ai_persona: bot.ai_persona,
               greeting_message: bot.greeting_message,
@@ -190,6 +192,8 @@ export default function DashboardPage() {
         } catch (error) {
           console.error("Error fetching bots:", error);
           setBots([]);
+        } finally {
+          setIsLoadingBots(false); // Set loading state to false
         }
       };
       fetchBots();
@@ -221,7 +225,7 @@ export default function DashboardPage() {
     };
 
     checkUser();
-  }, [router, supabaseClient]) // Add router and supabaseClient as dependencies
+  }, [router, supabaseClient]); // Add router and supabaseClient as dependencies
 
   // Effect for fetching chats when a bot is selected in Messages Tab
   useEffect(() => {
@@ -372,44 +376,65 @@ export default function DashboardPage() {
   }
 
   const handleUpdateBot = async () => {
-    if (!editingBotData) return
-    setIsUpdatingBot(true)
+    if (!editingBotData) return;
+    setIsUpdatingBot(true);
     try {
-      let aiPersona = null
+      let aiPersona = null;
       if (editingBotData.ai_persona_string.trim() !== "") {
         try {
-          aiPersona = JSON.parse(editingBotData.ai_persona_string)
-        } catch { // Error variable not needed for this specific re-throw
-          throw new SyntaxError("Invalid JSON format for AI Persona.")
+          aiPersona = JSON.parse(editingBotData.ai_persona_string);
+        } catch {
+          throw new SyntaxError("Invalid JSON format for AI Persona.");
         }
+      }
+
+      const updatedFields: Record<string, unknown> = {
+        id: editingBotData.id,
+        personalityPrompt: editingBotData.personality_prompt,
+        aiPersona: aiPersona,
+        greetingMessage: editingBotData.greeting_message,
+        fallbackResponse: editingBotData.fallback_response,
+      };
+
+      // Regenerate bot personality if personality_prompt is changed
+      const originalBot = bots.find((b) => b.id === editingBotData.id);
+      if (originalBot && originalBot.personality_prompt !== editingBotData.personality_prompt) {
+        const geminiPrompt = `Generate a JSON object containing the following for a sales bot based on this personality prompt: "${editingBotData.personality_prompt}". The JSON object should have the keys "persona" (a detailed JSON object representing the bot's personality traits, tone, style, and specific instructions), "greeting" (a short and engaging greeting message), and "fallback" (a polite and helpful fallback response when the bot doesn't understand).`;
+        const geminiResponse = await fetch("/api/gemini", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: geminiPrompt }),
+        });
+
+        if (!geminiResponse.ok) {
+          throw new Error("Failed to regenerate bot personality.");
+        }
+
+        const { persona, greeting, fallback } = await geminiResponse.json();
+        updatedFields.aiPersona = persona;
+        updatedFields.greetingMessage = greeting;
+        updatedFields.fallbackResponse = fallback;
       }
 
       const response = await fetch(`/api/bot`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: editingBotData.id,
-          // Assuming API expects these field names for update
-          personalityPrompt: editingBotData.personality_prompt,
-          aiPersona: aiPersona,
-          greetingMessage: editingBotData.greeting_message,
-          fallbackResponse: editingBotData.fallback_response,
-        }),
-      })
+        body: JSON.stringify(updatedFields),
+      });
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `Failed to update bot: ${response.statusText}`)
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to update bot: ${response.statusText}`);
       }
 
-      const { data: updatedBotApi } = await response.json()
+      const { data: updatedBotApi } = await response.json();
 
       setBots((prevBots) =>
         prevBots.map((b) =>
           b.id === editingBotData.id
             ? {
                 ...b,
-                name: updatedBotApi.name || b.name, // API might return updated name
+                name: updatedBotApi.name || b.name,
                 personality_prompt: updatedBotApi.personality_prompt,
                 ai_persona: updatedBotApi.ai_persona,
                 greeting_message: updatedBotApi.greeting_message,
@@ -417,13 +442,15 @@ export default function DashboardPage() {
               }
             : b
         )
-      )
-      // Keep the form open with updated data, or toggleBotExpansion(editingBotData.id) to close
+      );
+
+      // Reload the bot edit component
+      toggleBotExpansion(editingBotData.id);
     } catch (error) {
-      console.error("Error updating bot:", error)
-      alert(`Error updating bot: ${error instanceof Error ? error.message : "Unknown error"}`)
+      console.error("Error updating bot:", error);
+      alert(`Error updating bot: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
-      setIsUpdatingBot(false)
+      setIsUpdatingBot(false);
     }
   }
 
@@ -719,7 +746,12 @@ export default function DashboardPage() {
                   </Card>
                 )}
 
-                {bots.length === 0 && !showCreateBot ? (
+                {isLoadingBots ? (
+                  <div className="text-center py-10">
+                    <Bot className="mx-auto h-12 w-12 text-gray-500 animate-spin" />
+                    <h3 className="mt-2 text-sm font-medium text-gray-300">Loading bots...</h3>
+                  </div>
+                ) : bots.length === 0 && !showCreateBot ? (
                   <div className="text-center py-10">
                     <Bot className="mx-auto h-12 w-12 text-gray-500" />
                     <h3 className="mt-2 text-sm font-medium text-gray-300">No bots found</h3>
@@ -817,8 +849,9 @@ export default function DashboardPage() {
                               <h4 className="text-lg font-semibold text-white mb-3">Edit Bot: {editingBotData.name}</h4>
 
                               <div className="space-y-1">
-                                <Label htmlFor={`personality-${bot.id}`} className="text-gray-300">
+                                <Label htmlFor={`personality-${bot.id}`} className="text-gray-300 flex items-center gap-2">
                                   Personality Prompt
+                                  <span className="text-xs text-yellow-400">(Changing this will regenerate the bot personality)</span>
                                 </Label>
                                 <Textarea
                                   id={`personality-${bot.id}`}
