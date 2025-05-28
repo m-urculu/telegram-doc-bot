@@ -33,11 +33,11 @@ import { Check } from "lucide-react"
 interface TelegramBot {
   id: string
   name: string
-  apiKey: string
+  api_key: string
   status: "active" | "inactive"
-  documentsCount: number
-  messagesCount: number
-  createdAt: string
+  documents_count: number
+  messages_count: number
+  created_at: string
   personality_prompt?: string
   ai_persona?: Record<string, unknown> // More specific than any
   greeting_message?: string
@@ -78,11 +78,11 @@ interface MessageDetail {
   sender_name: string;
 }
 
-function maskApiKey(apiKey: string) {
-  if (!apiKey) return ""
+function maskApiKey(api_key: string) {
+  if (!api_key) return ""
   // Show first 4 and last 4 chars, mask the rest
-  if (apiKey.length <= 8) return apiKey
-  return apiKey.slice(0, 4) + "••••••••" + apiKey.slice(-4)
+  if (api_key.length <= 8) return api_key
+  return api_key.slice(0, 4) + "••••••••" + api_key.slice(-4)
 }
 
 function formatSimpleDate(dateString: string | undefined): string {
@@ -176,17 +176,17 @@ export default function DashboardPage() {
           const { data } = await res.json();
           setBots(
             (data || []).map((bot: TelegramBot) => ({
-              id: bot.id, // Maps the bot's unique ID
-              name: bot.name, // Maps the bot's name
-              apiKey: bot.apiKey || "", // Correctly maps API key
-              status: bot.status || "active", // Correctly maps bot status
-              documentsCount: bot.documentsCount || 0, // Correctly maps documents count
-              messagesCount: bot.messagesCount || 0, // Correctly maps messages count
-              createdAt: bot.createdAt, // Correctly maps creation date
-              personality_prompt: bot.personality_prompt || "", // Correctly maps personality prompt
-              ai_persona: bot.ai_persona || null, // Correctly maps AI persona
-              greeting_message: bot.greeting_message || "", // Correctly maps greeting message
-              fallback_response: bot.fallback_response || "", // Correctly maps fallback response
+              id: bot.id,
+              name: bot.name,
+              api_key: bot.api_key || "", // Correct field name
+              status: bot.status || "active",
+              documentsCount: bot.documents_count || 0,
+              messagesCount: bot.messages_count || 0,
+              createdAt: bot.created_at,
+              personality_prompt: bot.personality_prompt || "",
+              ai_persona: bot.ai_persona || null,
+              greeting_message: bot.greeting_message || "",
+              fallback_response: bot.fallback_response || "",
             }))
           );
         } catch (error) {
@@ -292,7 +292,7 @@ export default function DashboardPage() {
         },
         body: JSON.stringify({
           name: newBotName,
-          apiKey: newBotToken,
+          api_key: newBotToken,
           personalityPrompt: newBotPersonality,
         }),
       })
@@ -309,17 +309,17 @@ export default function DashboardPage() {
         {
           id: createdBot.id,
           name: createdBot.name,
-          apiKey: createdBot.apiKey || "",
+          api_key: createdBot.api_key || "", // Correct field name
           status: "active", // Assuming new bots are active
-          documentsCount: 0, // Initialize counts
-          messagesCount: 0,
-          createdAt: createdBot.created_at,
+          documents_count: 0, // Correct field name
+          messages_count: 0, // Correct field name
+          created_at: createdBot.created_at, // Correct field name
           personality_prompt: createdBot.personality_prompt,
           ai_persona: createdBot.ai_persona,
           greeting_message: createdBot.greeting_message,
           fallback_response: createdBot.fallback_response,
         },
-      ])
+      ]);
       setShowCreateBot(false)
       setNewBotName("")
       setNewBotToken("")
@@ -772,10 +772,10 @@ export default function DashboardPage() {
                             <div>
                               <h3 className="font-semibold text-lg text-white mt-2">{bot.name}</h3>
                               {/* Only show the partially hidden API key and copy button below */}
-                              {bot.apiKey ? (
+                              {bot.api_key ? (
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs text-gray-400 font-mono">
-                                    {maskApiKey(bot.apiKey)}
+                                    {maskApiKey(bot.api_key)}
                                   </span>
                                   <Button
                                     type="button"
@@ -784,7 +784,7 @@ export default function DashboardPage() {
                                     className="text-gray-400 hover:text-purple-400 p-1"
                                     title="Copy API Key"
                                     onClick={async () => {
-                                      await navigator.clipboard.writeText(bot.apiKey)
+                                      await navigator.clipboard.writeText(bot.api_key)
                                       setCopiedBotId(bot.id)
                                       setTimeout(() => setCopiedBotId(null), 1200)
                                     }}
@@ -806,8 +806,8 @@ export default function DashboardPage() {
                           </div>
                           <div className="flex items-center gap-4">
                             <div className="text-right">
-                              <p className="text-sm text-gray-300">{bot.messagesCount} messages</p>
-                              <p className="text-sm text-gray-300">{bot.documentsCount} documents</p>
+                              <p className="text-sm text-gray-300">{bot.messages_count} messages</p>
+                              <p className="text-sm text-gray-300">{bot.documents_count} documents</p>
                             </div>
                             <Badge
                               variant={bot.status === "active" ? "default" : "secondary"}
@@ -978,7 +978,7 @@ export default function DashboardPage() {
                               <SelectItem value="none" className="text-gray-400 hover:bg-gray-800">Do not assign</SelectItem>
                               {bots.map((bot) => (
                                 <SelectItem key={bot.id} value={bot.id} className="text-gray-300 hover:bg-gray-800">
-                                  {bot.name} ({maskApiKey(bot.apiKey)})
+                                  {bot.name} ({maskApiKey(bot.api_key)})
                                 </SelectItem>
                               ))}
                             </SelectContent>
