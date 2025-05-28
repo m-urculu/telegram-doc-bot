@@ -29,7 +29,6 @@ import Link from "next/link" // Import Link for navigation
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
 import { Check } from "lucide-react"
-import { HelpCircle } from "lucide-react"; // Import HelpCircle icon
 
 interface TelegramBot {
   id: string
@@ -176,18 +175,15 @@ export default function DashboardPage() {
           }
           const { data } = await res.json();
           setBots(
-            (data || []).map((bot: TelegramBot) => ({
-              id: bot.id,
-              name: bot.name,
-              apiKey: bot.api_key || "", // Ensure apiKey is correctly mapped
-              status: bot.status || "active", // Map status if available
-              documentsCount: bot.documents_count || 0, // Map documents count if available
-              messagesCount: bot.messages_count || 0, // Map messages count if available
-              createdAt: bot.created_at,
-              personality_prompt: bot.personality_prompt,
-              ai_persona: bot.ai_persona,
-              greeting_message: bot.greeting_message,
-              fallback_response: bot.fallback_response,
+            (data || []).map((bot: any) => ({
+              id: bot.id, // Correctly map bot ID
+              userId: bot.user_id, // Correctly map user ID
+              apiKey: bot.api_key || "", // Correctly map API key
+              name: bot.name, // Correctly map bot name
+              personality_prompt: bot.personality_prompt || "", // Correctly map personality prompt
+              ai_persona: bot.ai_persona || null, // Correctly map AI persona
+              greeting_message: bot.greeting_message || "", // Correctly map greeting message
+              fallback_response: bot.fallback_response || "", // Correctly map fallback response
             }))
           );
         } catch (error) {
@@ -701,16 +697,8 @@ export default function DashboardPage() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="botToken" className="text-gray-300 flex items-center gap-2">
+                            <Label htmlFor="botToken" className="text-gray-300">
                               Bot Token
-                              <button
-                                type="button"
-                                className="text-gray-400 hover:text-purple-400"
-                                title="Learn how to get your bot token"
-                                onClick={() => window.open("/tutorial", "_blank")}
-                              >
-                                <HelpCircle className="h-4 w-4" />
-                              </button>
                             </Label>
                             <Input
                               id="botToken"

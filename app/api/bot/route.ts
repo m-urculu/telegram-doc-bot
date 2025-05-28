@@ -9,8 +9,8 @@ import { callGemini } from '@/lib/gemini'; // Assuming this is your Gemini utili
 
 // --- Helper function to get user ---
 const getUser = async () => {
-  const cookieStore = cookies(); // Invoke cookies() to get the store
-  const supabase = createServerComponentClient({ cookies: () => cookieStore }); // Pass a function that returns the store
+  const cookieStore = await cookies(); // Ensure cookies() is awaited
+  const supabase = createServerComponentClient({ cookies: () => cookieStore }); // Pass the awaited cookie store
   const {
     data: { user },
     error: userError,
@@ -173,13 +173,13 @@ export async function GET() {
   try {
     const user = await getUser();
 
-    const cookieStore = cookies(); // Get cookie store for this handler
+    const cookieStore = await cookies(); // Ensure cookies() is awaited
     const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
     // Fetch all bots for the authenticated user
     const { data, error } = await supabase
       .from('bots')
-      .select('*') // Ensure 'api_key' is included in the selection
+      .select('id, user_id, api_key, name, personality_prompt, ai_persona, greeting_message, fallback_response') // Correct fields
       .eq('user_id', user.id); // Filter by the authenticated user's ID
 
     if (error) {
@@ -265,6 +265,8 @@ export async function PATCH(request: Request) {
 
     const {
       id,
+      // name, // Not currently sent by the dashboard edit form for PATCH
+      // apiKey, // Not currently sent by the dashboard edit form for PATCH
       personalityPrompt, // Sent from the edit form
       aiPersona,         // Sent from the edit form (already a JSON object or null)
       greetingMessage,   // Sent from the edit form
@@ -278,45 +280,52 @@ export async function PATCH(request: Request) {
     const cookieStore = cookies(); // Get cookie store for this handler
     const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
+    // Note: API key validation during PATCH is only relevant if apiKey is part of the PATCH payload.
+    // The current dashboard form doesn't send apiKey for updates, so this block might not be hit.
+    if (body.apiKey) { // Check if apiKey was part of the body
+      const { data: existingBot, error: apiKeyError } = await supabase
+        .from('bots')
+        .select('id')
+        .eq('api_key', body.apiKey)
+        .neq('id', id) // Exclude the current bot from the check
+        .single();
+
+      if (apiKeyError && apiKeyError.code !== 'PGRST116') { // Ignore "no rows found" error
+        console.error('Error checking API key:', apiKeyError);
+        return NextResponse.json({ error: 'Failed to validate API key.' }, { status: 500 });
+      }
+
+      if (existingBot) {
+        return NextResponse.json({ error: 'API key already exists in another bot.' }, { status: 400 });
+      }
+    }
+
     const updatedFields: Record<string, string | object | null> = {};
 
-    // Regenerate bot personality if personalityPrompt is provided
+    // Map provided fields from the request body to database column names
+    // Only add fields to `updatedFields` if they were actually included in the request
+    if (body.name !== undefined) { // If name update is ever added to the form
+      updatedFields.name = body.name;
+    }
+    if (body.apiKey !== undefined) { // If apiKey update is ever added to the form
+      updatedFields.api_key = body.apiKey;
+    }
     if (personalityPrompt !== undefined) {
-      const geminiPrompt = `Generate a JSON object containing the following for a sales bot based on this personality prompt: "${personalityPrompt}". The JSON object should have the keys "persona" (a detailed JSON object representing the bot's personality traits, tone, style, and specific instructions), "greeting" (a short and engaging greeting message), and "fallback" (a polite and helpful fallback response when the bot doesn't understand).`;
-      const geminiResponse = await callGemini(geminiPrompt);
+      updatedFields.personality_prompt = personalityPrompt;
+    }
+    if (aiPersona !== undefined) { // aiPersona is expected to be an object or null
+      updatedFields.ai_persona = aiPersona;
+    }
+    if (greetingMessage !== undefined) {
+      updatedFields.greeting_message = greetingMessage;
+    }
+    if (fallbackResponse !== undefined) {
+      updatedFields.fallback_response = fallbackResponse;
+    }
 
-      if (!geminiResponse) {
-        console.error('Gemini call returned no response.');
-        return NextResponse.json({ error: 'Failed to get response from Gemini.' }, { status: 500 });
-      }
-
-      let botDetails: { persona: unknown; greeting: string; fallback: string };
-      try {
-        const cleanedGeminiResponse = geminiResponse
-          .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '') // Remove comments
-          .trim();
-        botDetails = JSON.parse(cleanedGeminiResponse);
-
-        if (
-          typeof botDetails !== 'object' ||
-          !botDetails ||
-          !('persona' in botDetails) ||
-          !('greeting' in botDetails) ||
-          !('fallback' in botDetails)
-        ) {
-          console.error('Gemini response did not contain expected keys:', botDetails);
-          return NextResponse.json({ error: 'Invalid format in Gemini response.' }, { status: 500 });
-        }
-
-        updatedFields.personality_prompt = personalityPrompt;
-        updatedFields.ai_persona = botDetails.persona;
-        updatedFields.greeting_message = botDetails.greeting;
-        updatedFields.fallback_response = botDetails.fallback;
-      } catch (error: unknown) {
-        console.error('Error parsing Gemini response:', error);
-        console.error('Raw Gemini Response:', geminiResponse);
-        return NextResponse.json({ error: 'Failed to parse Gemini response.' }, { status: 500 });
-      }
+    // If no fields were provided to update (that this handler processes), return an error
+    if (Object.keys(updatedFields).length === 0) {
+      return NextResponse.json({ error: 'No recognized fields to update were provided.' }, { status: 400 });
     }
 
     // Update the bot in the database
@@ -334,6 +343,7 @@ export async function PATCH(request: Request) {
     }
 
     if (!updatedBot) {
+      // This could happen if RLS prevents the update, or the bot ID + user ID combo wasn't found.
       console.error('Bot not found or update failed to return data.');
       return NextResponse.json({ error: 'Bot not found or failed to retrieve details after update.' }, { status: 404 });
     }
@@ -354,6 +364,8 @@ export async function PATCH(request: Request) {
       } else {
         errorMessage = `Failed to update bot: ${error.message}`;
       }
+    }  else if (typeof error === 'string') {
+        errorMessage = `Failed to update bot: ${error}`;
     }
     return NextResponse.json({ error: errorMessage }, { status });
   }
