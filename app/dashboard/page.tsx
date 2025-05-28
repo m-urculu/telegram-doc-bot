@@ -176,17 +176,17 @@ export default function DashboardPage() {
           const { data } = await res.json();
           setBots(
             (data || []).map((bot: any) => ({
-              id: bot.id, // Correctly map bot ID
-              name: bot.name, // Correctly map bot name
-              apiKey: bot.api_key || "", // Correctly map API key
-              status: bot.bot_status || "active", // Correctly map bot status
-              documentsCount: bot.documents_count || 0, // Correctly map documents count
-              messagesCount: bot.messages_count || 0, // Correctly map messages count
-              createdAt: bot.created_at, // Correctly map creation date
-              personality_prompt: bot.personality_prompt || "", // Correctly map personality prompt
-              ai_persona: bot.ai_persona || null, // Correctly map AI persona
-              greeting_message: bot.greeting_message || "", // Correctly map greeting message
-              fallback_response: bot.fallback_response || "", // Correctly map fallback response
+              id: bot.id, // Maps the bot's unique ID
+              name: bot.name, // Maps the bot's name
+              apiKey: bot.apiKey || "", // Correctly maps API key
+              status: bot.status || "active", // Correctly maps bot status
+              documentsCount: bot.documentsCount || 0, // Correctly maps documents count
+              messagesCount: bot.messagesCount || 0, // Correctly maps messages count
+              createdAt: bot.createdAt, // Correctly maps creation date
+              personality_prompt: bot.personality_prompt || "", // Correctly maps personality prompt
+              ai_persona: bot.ai_persona || null, // Correctly maps AI persona
+              greeting_message: bot.greeting_message || "", // Correctly maps greeting message
+              fallback_response: bot.fallback_response || "", // Correctly maps fallback response
             }))
           );
         } catch (error) {
