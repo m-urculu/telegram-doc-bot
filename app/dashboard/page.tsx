@@ -177,9 +177,12 @@ export default function DashboardPage() {
           setBots(
             (data || []).map((bot: any) => ({
               id: bot.id, // Correctly map bot ID
-              userId: bot.user_id, // Correctly map user ID
-              apiKey: bot.api_key || "", // Correctly map API key
               name: bot.name, // Correctly map bot name
+              apiKey: bot.api_key || "", // Correctly map API key
+              status: bot.bot_status || "active", // Correctly map bot status
+              documentsCount: bot.documents_count || 0, // Correctly map documents count
+              messagesCount: bot.messages_count || 0, // Correctly map messages count
+              createdAt: bot.created_at, // Correctly map creation date
               personality_prompt: bot.personality_prompt || "", // Correctly map personality prompt
               ai_persona: bot.ai_persona || null, // Correctly map AI persona
               greeting_message: bot.greeting_message || "", // Correctly map greeting message

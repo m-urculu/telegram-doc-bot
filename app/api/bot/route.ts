@@ -9,8 +9,8 @@ import { callGemini } from '@/lib/gemini'; // Assuming this is your Gemini utili
 
 // --- Helper function to get user ---
 const getUser = async () => {
-  const cookieStore = await cookies(); // Ensure cookies() is awaited
-  const supabase = createServerComponentClient({ cookies: () => cookieStore }); // Pass the awaited cookie store
+  const cookieStore = cookies(); // Invoke cookies() to get the store
+  const supabase = createServerComponentClient({ cookies: () => cookieStore }); // Pass a function that returns the store
   const {
     data: { user },
     error: userError,
@@ -173,13 +173,13 @@ export async function GET() {
   try {
     const user = await getUser();
 
-    const cookieStore = await cookies(); // Ensure cookies() is awaited
+    const cookieStore = cookies(); // Get cookie store for this handler
     const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
     // Fetch all bots for the authenticated user
     const { data, error } = await supabase
       .from('bots')
-      .select('id, user_id, api_key, name, personality_prompt, ai_persona, greeting_message, fallback_response') // Correct fields
+      .select('*') // Ensure 'api_key' is included in the selection
       .eq('user_id', user.id); // Filter by the authenticated user's ID
 
     if (error) {
