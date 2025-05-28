@@ -29,6 +29,7 @@ import Link from "next/link" // Import Link for navigation
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
 import { Check } from "lucide-react"
+import { HelpCircle } from "lucide-react"; // Import HelpCircle icon
 
 interface TelegramBot {
   id: string
@@ -700,8 +701,16 @@ export default function DashboardPage() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="botToken" className="text-gray-300">
+                            <Label htmlFor="botToken" className="text-gray-300 flex items-center gap-2">
                               Bot Token
+                              <button
+                                type="button"
+                                className="text-gray-400 hover:text-purple-400"
+                                title="Learn how to get your bot token"
+                                onClick={() => window.open("/tutorial", "_blank")}
+                              >
+                                <HelpCircle className="h-4 w-4" />
+                              </button>
                             </Label>
                             <Input
                               id="botToken"
