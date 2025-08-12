@@ -234,7 +234,7 @@ export async function DELETE(request: Request) {
     const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
     // Fetch the bot's api_key before deleting
-    const { data: botToDelete, error: fetchBotError } = await supabase
+    const { data: botToDelete } = await supabase
       .from('bots')
       .select('api_key')
       .eq('id', id)
