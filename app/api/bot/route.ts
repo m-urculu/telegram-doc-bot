@@ -130,7 +130,7 @@ export async function POST(request: Request) {
       } else {
         // Remove protocol if present
         const domain = vercelUrl.replace(/^https?:\/\//, '');
-        // FIX: Remove '/dashboard' from the webhook URL path
+        // FIX: Ensure webhook URL is /api/telegram, not /dashboard/api/telegram
         const webhookUrl = `https://${domain}/api/telegram?api_key=${encodeURIComponent(apiKey)}`;
         const telegramSetWebhookUrl = `https://api.telegram.org/bot${apiKey}/setWebhook`;
         console.log(`[Webhook] Setting Telegram webhook: ${telegramSetWebhookUrl} with payload:`, { url: webhookUrl });
@@ -233,6 +233,14 @@ export async function DELETE(request: Request) {
     const cookieStore = cookies(); // Get cookie store for this handler
     const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
+    // Fetch the bot's api_key before deleting
+    const { data: botToDelete, error: fetchBotError } = await supabase
+      .from('bots')
+      .select('api_key')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single();
+
     // Delete the bot from the database
     const { error } = await supabase
       .from('bots')
@@ -243,6 +251,25 @@ export async function DELETE(request: Request) {
     if (error) {
       console.error('Error deleting bot:', error);
       return NextResponse.json({ error: `Failed to delete bot: ${error.message}` }, { status: 500 });
+    }
+
+    // Unset Telegram webhook if api_key is available
+    if (botToDelete && botToDelete.api_key) {
+      try {
+        const telegramSetWebhookUrl = `https://api.telegram.org/bot${botToDelete.api_key}/setWebhook`;
+        const res = await fetch(telegramSetWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: "" }),
+        });
+        const unsetResult = await res.json();
+        console.log('[Webhook] Telegram unsetWebhook response:', unsetResult);
+        if (!unsetResult.ok) {
+          console.error('Failed to unset Telegram webhook:', unsetResult);
+        }
+      } catch (unsetError) {
+        console.error('Error unsetting Telegram webhook:', unsetError);
+      }
     }
 
     return NextResponse.json({ message: 'Bot deleted successfully.' }, { status: 200 });
