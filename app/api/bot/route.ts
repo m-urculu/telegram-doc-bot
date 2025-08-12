@@ -128,8 +128,10 @@ export async function POST(request: Request) {
       if (!vercelUrl) {
         console.warn('NEXT_PUBLIC_VERCEL_URL environment variable is not set. Skipping webhook setup.');
       } else {
+        // Remove protocol if present
+        const domain = vercelUrl.replace(/^https?:\/\//, '');
         // Add api_key to webhook URL so your /api/telegram handler receives it
-        const webhookUrl = `https://${vercelUrl}/api/telegram?api_key=${encodeURIComponent(apiKey)}`;
+        const webhookUrl = `https://${domain}/api/telegram?api_key=${encodeURIComponent(apiKey)}`;
         const telegramSetWebhookUrl = `https://api.telegram.org/bot${apiKey}/setWebhook`;
         console.log(`[Webhook] Setting Telegram webhook: ${telegramSetWebhookUrl} with payload:`, { url: webhookUrl });
         console.log('Webhook URL being sent to Telegram:', webhookUrl);
