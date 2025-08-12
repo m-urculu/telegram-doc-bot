@@ -26,15 +26,22 @@ export async function GET(request: Request, { params }: { params: { botId: strin
     }
 
     // Group messages by chat_id and get the latest message per chat
-    const chatMap = new Map<number, any>();
+    interface ChatSummary {
+      chat_id: number;
+      telegram_user_id: number;
+      telegram_username: string | null;
+      last_message_text: string | null;
+      last_message_at: string | null;
+    }
+    const chatMap = new Map<number, ChatSummary>();
     for (const msg of data || []) {
       if (!chatMap.has(msg.chat_id)) {
         chatMap.set(msg.chat_id, {
           chat_id: msg.chat_id,
           telegram_user_id: msg.user_id,
-          telegram_username: msg.username,
-          last_message_text: msg.text,
-          last_message_at: msg.date,
+          telegram_username: msg.username ?? null,
+          last_message_text: msg.text ?? null,
+          last_message_at: msg.date ?? null,
         });
       }
     }
