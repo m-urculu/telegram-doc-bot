@@ -57,30 +57,48 @@ interface MessageFromDB {
 // }
 
 export async function POST(request: Request) {
+    // --- Log the full request body at the very top ---
+    let rawBody: any = null;
+    try {
+        rawBody = await request.clone().json();
+        console.log('[Telegram] Raw request body:', JSON.stringify(rawBody, null, 2));
+    } catch (e) {
+        console.error('[Telegram] Failed to parse request body:', e);
+    }
+
     try {
         // --- 1. Receive the message from user, chat context and documentation (Bot Profile) ---
         const { searchParams } = new URL(request.url);
         const apiKey = searchParams.get('api_key'); // This is the Telegram Bot API Key
-        if (!apiKey) return NextResponse.json({ ok: false, error: 'Missing Telegram api_key for bot identification' }, { status: 400 });
 
-        const body = await request.json();
+        // If api_key is missing, log and return 200 OK (do not return 400)
+        if (!apiKey) {
+            console.log('[Telegram] No api_key in query. Raw body:', JSON.stringify(rawBody, null, 2));
+            return NextResponse.json({ ok: true, info: 'No api_key provided. Telegram update received.' });
+        }
+
+        const body = rawBody ?? await request.json();
         const message = body.message as IncomingMessage | undefined;
 
         // Log received Telegram message
         console.log('[Telegram] Received message:', JSON.stringify(message, null, 2));
 
+        // If no message, handle other Telegram update types gracefully
         if (!message || !message.text) {
-            console.log('No message or no text in message, skipping.');
-            return NextResponse.json({ ok: true, info: 'No message text to process' });
+            console.log('[Telegram] No message or no text in message. Update type:', Object.keys(body));
+            // Always return 200 OK for Telegram updates, even if not processed
+            return NextResponse.json({ ok: true, info: 'No message text to process. Telegram update received.' });
         }
 
         const { message_id, from, chat, text, date } = message;
         const userTelegramId = from?.id;
         const chatTelegramId = chat?.id;
 
+        // Only return 400 for truly invalid requests (e.g., missing user/chat ID)
         if (!userTelegramId || !chatTelegramId) {
             console.error('Missing user_id or chat_id from Telegram message.');
-            return NextResponse.json({ ok: false, error: 'Missing user or chat ID from Telegram.' }, { status: 400 });
+            // Return 200 OK so Telegram does not retry, but log the error
+            return NextResponse.json({ ok: true, info: 'Missing user or chat ID from Telegram message.' });
         }
 
         // Fetch Bot Profile (personality and fallback response)
@@ -269,6 +287,7 @@ export async function POST(request: Request) {
     } catch (e) {
         const error = e instanceof Error ? e.message : 'Unknown webhook processing error';
         console.error('Overall Telegram webhook error:', error, e);
-        return NextResponse.json({ ok: false, error: 'Webhook error: ' + error }, { status: 500 });
+        // Always return 200 OK so Telegram does not retry
+        return NextResponse.json({ ok: true, error: 'Webhook error: ' + error });
     }
 }
