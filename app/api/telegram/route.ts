@@ -185,6 +185,14 @@ export async function POST(request: Request) {
         // --- 2. Generate response ---
         let finalAiResponseText: string = botProfile.fallback_response || "Sorry, I didn't quite understand that.";
 
+        // Convert persona to readable string for prompt
+        let personaString = "";
+        if (typeof botProfile.ai_persona === "object") {
+            personaString = JSON.stringify(botProfile.ai_persona, null, 2);
+        } else {
+            personaString = String(botProfile.ai_persona || "");
+        }
+
         // Incorporate documentation into the LLM prompt if available
         let docsSnippet = '';
         if (documentation.length > 0) {
@@ -203,7 +211,7 @@ export async function POST(request: Request) {
         }
 
         const llmPrompt = `
-            You are a general assistant with the following persona: "${botProfile.ai_persona}".
+            You are a general assistant with the following persona: ${personaString}
             Your goal is to provide helpful, conversational, and concise responses.
             You should always maintain your assigned persona.
 
