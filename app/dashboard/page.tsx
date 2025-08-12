@@ -242,13 +242,23 @@ export default function DashboardPage() {
       setConversationMessages([]);
       try {
         const res = await fetch(`/api/bot/${selectedBotIdForMessages}/chats`);
-        if (!res.ok) throw new Error("Failed to fetch chats");
+        if (!res.ok) {
+          let errorMsg = "Failed to fetch chats";
+          try {
+            const errorData = await res.json();
+            errorMsg = errorData.error || errorMsg;
+            console.error("Error response from /api/bot/[id]/chats:", errorData);
+          } catch (parseErr) {
+            console.error("Failed to parse error response from /api/bot/[id]/chats", parseErr);
+          }
+          throw new Error(errorMsg);
+        }
         const { data } = await res.json();
         setChatsForSelectedBot(data || []);
       } catch (error) {
         console.error("Error fetching chats:", error);
         setChatsForSelectedBot([]);
-        alert(`Error fetching chats: ${error instanceof Error ? error.message : "Unknown error"}`);
+        alert(`Error fetching chats: ${error instanceof Error ? error.message : JSON.stringify(error)}`);
       } finally {
         setIsLoadingChats(false);
       }
@@ -1071,16 +1081,6 @@ export default function DashboardPage() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="start" className="bg-gray-900 border-gray-800 w-56">
-                                <DropdownMenuItem
-                                  onSelect={() => handleAssignBotToDocument(doc.id, null)}
-                                  className="cursor-pointer text-gray-400 hover:bg-gray-800"
-                                >
-                                  Unassign
-                                </DropdownMenuItem>
-                                {bots.map((bot) => (
-                                  <DropdownMenuItem
-                                    key={bot.id}
-                                    onSelect={() => handleAssignBotToDocument(doc.id, bot.id)}
                                     className="cursor-pointer text-gray-300 hover:bg-gray-800"
                                   >
                                     {bot.name}
