@@ -130,7 +130,6 @@ export async function POST(request: Request) {
       } else {
         // Remove protocol if present
         const domain = vercelUrl.replace(/^https?:\/\//, '');
-        // FIX: Ensure webhook URL is /api/telegram, not /dashboard/api/telegram
         const webhookUrl = `https://${domain}/api/telegram?api_key=${encodeURIComponent(apiKey)}`;
         const telegramSetWebhookUrl = `https://api.telegram.org/bot${apiKey}/setWebhook`;
         console.log(`[Webhook] Setting Telegram webhook: ${telegramSetWebhookUrl} with payload:`, { url: webhookUrl });
