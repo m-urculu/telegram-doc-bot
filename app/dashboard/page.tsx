@@ -292,7 +292,7 @@ export default function DashboardPage() {
         },
         body: JSON.stringify({
           name: newBotName,
-          api_key: newBotToken,
+          apiKey: newBotToken,
           personalityPrompt: newBotPersonality,
         }),
       })
