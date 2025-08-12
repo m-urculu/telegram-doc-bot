@@ -1081,6 +1081,10 @@ export default function DashboardPage() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="start" className="bg-gray-900 border-gray-800 w-56">
+                                {bots.map((bot) => (
+                                  <DropdownMenuItem
+                                    key={bot.id}
+                                    onClick={() => handleAssignBotToDocument(doc.id, bot.id)}
                                     className="cursor-pointer text-gray-300 hover:bg-gray-800"
                                   >
                                     {bot.name}
