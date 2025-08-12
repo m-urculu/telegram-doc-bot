@@ -131,14 +131,19 @@ export async function POST(request: Request) {
         // Add api_key to webhook URL so your /api/telegram handler receives it
         const webhookUrl = `https://${vercelUrl}/api/telegram?api_key=${encodeURIComponent(apiKey)}`;
         const telegramSetWebhookUrl = `https://api.telegram.org/bot${apiKey}/setWebhook`;
+        console.log(`[Webhook] Setting Telegram webhook: ${telegramSetWebhookUrl} with payload:`, { url: webhookUrl });
+        console.log('Webhook URL being sent to Telegram:', webhookUrl);
         const res = await fetch(telegramSetWebhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: webhookUrl }),
         });
         const webhookResult = await res.json();
+        console.log('[Webhook] Telegram setWebhook response:', webhookResult);
         if (!webhookResult.ok) {
           console.error('Failed to set Telegram webhook:', webhookResult);
+          // Log the attempted webhook URL and Telegram's response for easier debugging
+          console.error('Attempted webhook URL:', webhookUrl);
         } else {
           console.log('Telegram webhook set successfully:', webhookResult);
         }
