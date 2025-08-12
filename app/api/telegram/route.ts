@@ -58,7 +58,7 @@ interface MessageFromDB {
 
 export async function POST(request: Request) {
     // --- Log the full request body at the very top ---
-    let rawBody: any = null;
+    let rawBody: unknown = null;
     try {
         rawBody = await request.clone().json();
         console.log('[Telegram] Raw request body:', JSON.stringify(rawBody, null, 2));
@@ -78,7 +78,8 @@ export async function POST(request: Request) {
         }
 
         const body = rawBody ?? await request.json();
-        const message = body.message as IncomingMessage | undefined;
+        // If you need to access properties, cast to Record<string, unknown> or a Telegram update type:
+        const message = (body as { message?: IncomingMessage }).message as IncomingMessage | undefined;
 
         // Log received Telegram message
         console.log('[Telegram] Received message:', JSON.stringify(message, null, 2));
