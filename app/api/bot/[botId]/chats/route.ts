@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-type Context = { params: { botId: string } };
-
 // GET /api/bot/[botId]/chats
-export async function GET(request: Request, { params }: Context) {
+export async function GET(request: Request, { params }: { params: { botId: string } }) {
   try {
     const botId = params.botId;
     if (!botId) {
