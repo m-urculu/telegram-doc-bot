@@ -2,11 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-type Params = {
-  botId: string;
-};
-
-export async function GET(_request: Request,  params :  Params ) {
+export async function GET(_request: Request, { params }: any) {
   try {
     const botId = params.botId;
     if (!botId) {
