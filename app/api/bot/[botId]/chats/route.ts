@@ -6,10 +6,9 @@ import { cookies } from 'next/headers';
 // import type { NextApiRequest } from 'next';
 // Use the built-in type for context in Next.js app router
 export async function GET(
-  // request: Request,
-  context: { params: { botId: string } }
+  _: Request,
+  { params }: { params: { botId: string } }
 ) {
-  const { params } = context;
   try {
     const botId = params.botId;
     if (!botId) {
