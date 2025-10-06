@@ -3,9 +3,9 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
 // GET /api/bot/[botId]/chats
-export async function GET(request: Request, context: { params: { botId: string } }) {
+export async function GET(request: Request, { params }: any) {
   try {
-    const botId = context.params.botId;
+    const botId = params.botId;
     if (!botId) {
       return NextResponse.json({ error: 'Bot ID is required.' }, { status: 400 });
     }
