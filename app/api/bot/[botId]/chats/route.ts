@@ -2,17 +2,12 @@ import { NextResponse } from 'next/server';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
-// GET /api/bot/[botId]/chats
-// import type { NextApiRequest } from 'next';
-// Use the built-in type for context in Next.js app router
-export async function GET(
-  _: Request,
-  { params }: { params: { botId: string } }
-) {
+export async function GET(_request: Request, { params }: { params: { botId: string }}) {
   try {
     const botId = params.botId;
     if (!botId) {
-      return NextResponse.json({ error: 'Bot ID is required.' }, { status: 400 });
+      return NextResponse.json({ 
+      error: 'Bot ID is required.' }, { status: 400 });
     }
 
     const cookieStore = cookies();
