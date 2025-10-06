@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(_request: Request, { params }: any) {
   try {
     const botId = params.botId;
