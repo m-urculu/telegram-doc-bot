@@ -3,7 +3,13 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
 // GET /api/bot/[botId]/chats
-export async function GET(request: Request, { params }: { params: { botId: string } }) {
+// import type { NextApiRequest } from 'next';
+// Use the built-in type for context in Next.js app router
+export async function GET(
+  request: Request,
+  context: { params: { botId: string } }
+) {
+  const { params } = context;
   try {
     const botId = params.botId;
     if (!botId) {
