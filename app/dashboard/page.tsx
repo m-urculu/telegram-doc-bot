@@ -581,15 +581,15 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-gray-100">
       {/* Background Gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/10 via-black to-blue-900/10" />
+      <div className="fixed inset-0 bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10" />
 
       <header className="relative z-50 border-b border-gray-800 backdrop-blur-xl bg-black/50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-4 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center group-hover:opacity-80 transition-opacity">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-500 rounded-lg flex items-center justify-center group-hover:opacity-80 transition-opacity">
               <Bot className="h-6 w-6 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white group-hover:text-purple-300 transition-colors">Dashboard</h1>
+            <h1 className="text-2xl font-bold text-white group-hover:text-blue-300 transition-colors">Dashboard</h1>
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -615,7 +615,7 @@ export default function DashboardPage() {
                     }}
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-500 rounded-full flex items-center justify-center text-white">
                     <Users className="h-5 w-5" /> {/* Fallback icon */}
                   </div>
                 )}
@@ -663,7 +663,7 @@ export default function DashboardPage() {
                   </div>
                   <Button
                     onClick={() => setShowCreateBot(!showCreateBot)}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                    className="bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Create Bot
@@ -737,7 +737,7 @@ export default function DashboardPage() {
                         <div className="flex gap-3 pt-2">
                           <Button
                             type="submit"
-                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                            className="bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700"
                             disabled={isCreatingBot}
                           >
                             {isCreatingBot ? "Creating..." : "Create Bot"}
@@ -776,7 +776,7 @@ export default function DashboardPage() {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-500 rounded-lg flex items-center justify-center">
                               <Bot className="h-6 w-6 text-white" />
                             </div>
                             <div>
@@ -791,7 +791,7 @@ export default function DashboardPage() {
                                     type="button"
                                     size="icon"
                                     variant="ghost"
-                                    className="text-gray-400 hover:text-purple-400 p-1"
+                                    className="text-gray-400 hover:text-blue-400 p-1"
                                     title="Copy API Key"
                                     onClick={async () => {
                                       await navigator.clipboard.writeText(bot.api_key)
@@ -829,13 +829,13 @@ export default function DashboardPage() {
                             </Badge>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-purple-400">
+                                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-blue-400">
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="bg-gray-900 border-gray-800">
                                 <DropdownMenuItem
-                                  className="text-gray-200 hover:text-white hover:bg-purple-600/80"
+                                  className="text-gray-200 hover:text-white hover:bg-blue-600/80"
                                   onClick={() => toggleBotExpansion(bot.id)}
                                 >
                                   <Edit className="h-4 w-4 mr-2" />
@@ -951,7 +951,7 @@ export default function DashboardPage() {
                   </div>
                   <Button
                     onClick={() => setShowAddDocument(!showAddDocument)}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                    className="bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Add Document
@@ -997,7 +997,7 @@ export default function DashboardPage() {
                         <div className="flex gap-3 pt-3">
                           <Button
                             type="submit"
-                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                            className="bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700"
                             disabled={isAddingDocument}
                           >
                             {isAddingDocument ? "Adding..." : "Add Document"}
@@ -1042,12 +1042,12 @@ export default function DashboardPage() {
                             </div>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-purple-400">
+                                <Button variant="ghost" size="icon" className="text-gray-400 hover:text-blue-400">
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="bg-gray-900 border-gray-800">
-                                <DropdownMenuItem className="text-gray-200 hover:text-white hover:bg-purple-600/80">
+                                <DropdownMenuItem className="text-gray-200 hover:text-white hover:bg-blue-600/80">
                                   <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="flex items-center w-full cursor-pointer">
                                     <ExternalLink className="h-4 w-4 mr-4" />
                                     Open
@@ -1154,7 +1154,7 @@ export default function DashboardPage() {
                             <li key={chat.chat_id}>
                               <Button
                                 variant="ghost"
-                                className={`w-full justify-start text-left h-auto py-2 px-3 ${selectedChat?.chat_id === chat.chat_id ? 'bg-purple-600/30 text-purple-200' : 'text-gray-300 hover:bg-gray-700/50'}`}
+                                className={`w-full justify-start text-left h-auto py-2 px-3 ${selectedChat?.chat_id === chat.chat_id ? 'bg-blue-600/30 text-blue-200' : 'text-gray-300 hover:bg-gray-700/50'}`}
                                 onClick={() => setSelectedChat(chat)}
                               >
                                 <div className="truncate">
@@ -1182,9 +1182,9 @@ export default function DashboardPage() {
                         <div className="space-y-3 flex-grow overflow-y-auto pr-2">
                           {conversationMessages.map((msg) => (
                             <div key={msg.id} className={`flex ${msg.is_bot_response ? 'justify-start' : 'justify-end'}`}>
-                              <div className={`max-w-[70%] p-3 rounded-lg ${msg.is_bot_response ? 'bg-gray-700 text-gray-200' : 'bg-purple-600 text-white'}`}>
+                              <div className={`max-w-[70%] p-3 rounded-lg ${msg.is_bot_response ? 'bg-gray-700 text-gray-200' : 'bg-blue-600 text-white'}`}>
                                 <p className="text-sm">{msg.text}</p>
-                                <p className={`text-xs mt-1 ${msg.is_bot_response ? 'text-gray-400' : 'text-purple-200'} text-right`}>{formatSimpleDate(msg.date)}</p>
+                                <p className={`text-xs mt-1 ${msg.is_bot_response ? 'text-gray-400' : 'text-blue-200'} text-right`}>{formatSimpleDate(msg.date)}</p>
                               </div>
                             </div>
                           ))}

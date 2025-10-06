@@ -19,8 +19,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Background Gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-900/20 via-black to-blue-900/20" />
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-600/10 via-transparent to-transparent" />
+      <div className="fixed inset-0 bg-gradient-to-br from-blue-900/20 via-black to-blue-900/20" />
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-600/10 via-transparent to-transparent" />
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md">
@@ -35,7 +35,7 @@ export default function LoginPage() {
 
           <Card className="bg-gray-900/80 backdrop-blur-xl border-gray-800 p-8">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Bot className="h-8 w-8 text-white" />
               </div>
               <h1 className="text-3xl font-bold mb-2 text-white">Welcome Back</h1>
