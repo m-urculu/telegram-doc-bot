@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SupabaseProvider } from "./providers";
 
+// If loading a variable font, you don't need to specify the font weight
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
