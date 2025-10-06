@@ -6,7 +6,7 @@ type Params = {
   botId: string;
 };
 
-export async function GET(_request: Request, { params }: { params: Params }) {
+export async function GET(_request: Request,  params :  Params ) {
   try {
     const botId = params.botId;
     if (!botId) {
