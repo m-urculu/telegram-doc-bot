@@ -3,7 +3,8 @@ import { useEffect } from "react"
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card" 
-import { Bot, Sparkles, Zap, Shield, Globe, Code, MessageSquare, FileText, ArrowRight, User as UserIcon } from "lucide-react"
+import { Bot, Sparkles, Globe, MessageSquare, FileText, ArrowRight, User as UserIcon } from "lucide-react"
+// import { Zap, Shield, Code as UserIcon } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image" // Import next/image
 
